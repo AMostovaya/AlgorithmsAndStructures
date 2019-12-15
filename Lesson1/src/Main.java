@@ -4,6 +4,22 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args){
 
+        Task51();
+
+    }
+
+    static int CalculateFactorial(int f, int kol) {
+
+        int result=0;
+        int res =1;
+        for (int i=f; i>=1; i=i-kol) {
+             res = res*i;
+        }
+        result = res;
+        return result;
+    }
+
+    private static void Task51() {
         /*
         Определение 1:
         n!!...!=n(n-k)(n-2k)...(n mod k), если n не делится на k,
@@ -21,16 +37,5 @@ public class Main {
         int res = CalculateFactorial(f, kol);
         out.println(res);
         out.flush();
-    }
-
-    static int CalculateFactorial(int f, int kol) {
-
-        int result=0;
-        int res =1;
-        for (int i=f; i>=1; i=i-kol) {
-             res = res*i;
-        }
-        result = res;
-        return result;
     }
 }

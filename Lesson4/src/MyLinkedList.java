@@ -85,6 +85,8 @@ public class MyLinkedList<Item> implements Iterable<Item>  {
         @Override
         public void set(Item item) {
 
+            current.value = item;
+
         }
 
         @Override

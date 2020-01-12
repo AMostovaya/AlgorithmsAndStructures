@@ -30,8 +30,16 @@ public class Main {
         // реализация ListIterator
        ListIterator<String> iterator = myLinkedList.listIterator();
         while(iterator.hasNext()){
-            System.out.print(iterator.next()+" ");
+            String element = iterator.next();
+            iterator.set(element + "*");
         }
+
+        System.out.println("ListIterator в обратном порядке:");
+        while (iterator.hasPrevious()) {
+            String element = iterator.previous();
+            System.out.print(element + " ");
+        }
+
 
         // реализация стека
         MyLinkedStack stack = new MyLinkedStack<>(myLinkedList);

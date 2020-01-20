@@ -1,3 +1,4 @@
+import java.util.NoSuchElementException;
 
 public class MyTreeMap <Key extends  Comparable <Key>, Value> {
 
@@ -45,6 +46,7 @@ public class MyTreeMap <Key extends  Comparable <Key>, Value> {
                 + toString(node.right);
     }
 
+    // проверка наличия значения по ключу
     public final boolean contains(Key key) {
         return get(key) != null;
     }
@@ -69,21 +71,42 @@ public class MyTreeMap <Key extends  Comparable <Key>, Value> {
         }
     }
 
+    // установка значения по ключу
     public final void put(Key key, Value value) {
+
         isKeyNotNull(key);
         if (value == null) {
-
             return;
         }
+
         root = put(root, key, value);
     }
 
+    private Node put(Node node, Key key, Value value) {
 
+        if (node == null) {
+            return new Node(key, value);
+        }
+        int cmp = key.compareTo(node.key);
+
+        if (cmp == 0) {
+            node.value = value;
+        } else if (cmp < 0) {
+            node.left = put(node.left, key, value);
+        } else {
+            node.right = put(node.right, key, value);
+        }
+        node.size = size(node.left) + size(node.right) + 1;
+        return node;
+    }
+
+    // удаление узла
     public final void remove(Key key) {
         isKeyNotNull(key);
         root = remove(root, key);
     }
 
+    // удаление узла (рекурсивный метод)
     private Node remove(Node node, Key key) {
         if (node == null) {
             return null;
@@ -109,15 +132,6 @@ public class MyTreeMap <Key extends  Comparable <Key>, Value> {
         return node;
     }
 
-    private Node deleteMin(Node node) {
-
-        if (node.left == null) {
-            return node.right;
-        }
-        node.left = deleteMin(node.left);
-        node.size = size(node.left) + size(node.right) + 1;
-        return node;
-    }
 
     private int size(Node node) {
 
@@ -131,6 +145,7 @@ public class MyTreeMap <Key extends  Comparable <Key>, Value> {
         return size(root);
     }
 
+    // поиск максимального и минимального элементов
     private Node min(Node node) {
         if (node.left == null) {
             return node;
@@ -138,20 +153,57 @@ public class MyTreeMap <Key extends  Comparable <Key>, Value> {
         return min(node.left);
     }
 
-    private Node put(Node node, Key key, Value value) {
-        if (node == null) {
-            return new Node(key, value);
+    private Node max(Node node) {
+        if (node.right == null) {
+            return node;
         }
-        int cmp = key.compareTo(node.key);
-        if (cmp == 0) {
-            node.value = value;
-        } else if (cmp < 0) {
-            node.left = put(node.left, key, value);
-        } else {
-            node.right = put(node.right, key, value);
+        return min(node.right);
+    }
+
+    public Key minKey() {
+        return min(root).key;
+    }
+
+    public Key maxKey() {
+        return max(root).key;
+    }
+
+    public void deleteMin() {
+        if (isEmpty()) {
+            throw new NoSuchElementException("Дерево не содержит элементы");
         }
+        root = deleteMin(root);
+    }
+
+    private Node deleteMin(Node node) {
+
+        if (node.left == null) {
+            return node.right;
+        }
+        node.left = deleteMin(node.left);
         node.size = size(node.left) + size(node.right) + 1;
         return node;
     }
+
+
+    public void deleteMax() {
+        if (isEmpty()) {
+            throw new NoSuchElementException("Дерево не содержит элементы");
+        }
+        root = deleteMax(root);
+    }
+
+    private Node deleteMax(Node node) {
+
+        if (node.right == null) {
+            return node.left;
+        }
+        node.right = deleteMax(node.right);
+        node.size = size(node.right) + size(node.left) + 1;
+        return node;
+    }
+
+
+    //
 
 }

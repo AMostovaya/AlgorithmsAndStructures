@@ -1,4 +1,5 @@
 import java.util.NoSuchElementException;
+import java.util.Random;
 
 public class MyTreeMap <Key extends  Comparable <Key>, Value> {
 
@@ -7,16 +8,18 @@ public class MyTreeMap <Key extends  Comparable <Key>, Value> {
     // вспомгательный внутренний класс для элемента из ключа и значения
     private class Node {
 
+        int height; // высота узла
         Key key; // ключ
         Value value; // значение
         Node left; // хранит ссылку на левое дерево
         Node right; // хранит ссылку на правое дерево
         int size; // количество узлов в дереве
 
-        public Node(Key key, Value value) {
+        public Node(Key key, Value value, int size, int height) {
             this.key = key;
             this.value = value;
-            this.size = 1;
+            this.size = size;
+            this.height = height;
         }
 
     }
@@ -84,8 +87,12 @@ public class MyTreeMap <Key extends  Comparable <Key>, Value> {
 
     private Node put(Node node, Key key, Value value) {
 
+        if (key == null) {
+            throw new IllegalArgumentException();
+        }
+
         if (node == null) {
-            return new Node(key, value);
+            return new Node(key, value, 1, 0);
         }
         int cmp = key.compareTo(node.key);
 
@@ -97,6 +104,21 @@ public class MyTreeMap <Key extends  Comparable <Key>, Value> {
             node.right = put(node.right, key, value);
         }
         node.size = size(node.left) + size(node.right) + 1;
+
+        if (node.left == null && node.right == null) {
+            node.height = 0;
+            // увеличиваем высоту узла
+        } else if (node.left != null && node.right == null) {
+            node.height = node.left.height + 1;
+        } else if (node.left == null) {
+            node.height = node.right.height + 1;
+        } else if (node.left.height > node.right.height) {
+            node.height = node.left.height + 1;
+        } else if (node.left.height < node.right.height) {
+            node.height = node.right.height + 1;
+        } else {
+            node.height = node.left.height + 1;
+        }
         return node;
     }
 
@@ -131,7 +153,6 @@ public class MyTreeMap <Key extends  Comparable <Key>, Value> {
         node.size = size(node.left) + size(node.right) + 1;
         return node;
     }
-
 
     private int size(Node node) {
 
@@ -203,7 +224,40 @@ public class MyTreeMap <Key extends  Comparable <Key>, Value> {
         return node;
     }
 
+    public int height() {
+        return height(root);
+    }
 
+    private int height(Node node) {
+        if (node == null) {
+            return 0;
+        }
+        return node.height;
+    }
+   // проверка баланса дерева
+    public boolean isBalanced() {
+        if (root == null || root.size == 1) {
+            return true;
+        } else {
+
+            int leftHeight;
+            int rightHeight;
+
+            if (root.left == null) {
+                leftHeight = 0;
+            } else {
+                leftHeight = root.left.height;
+            }
+
+            if (root.right == null) {
+                rightHeight = 0;
+            } else {
+                rightHeight = root.right.height;
+            }
+
+            return Math.abs(leftHeight - rightHeight) <= 1;
+        }
+    }
     //
 
 }
